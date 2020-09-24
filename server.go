@@ -1,8 +1,11 @@
 package main
 
 import (
+	"crypto/aes"
+	"crypto/cipher"
 	"fmt"
 	"io"
+	"io/ioutil"
 	"math"
 	"net"
 	"os"
@@ -12,6 +15,8 @@ import (
 	"github.com/pkg/errors"
 	log "github.com/sirupsen/logrus"
 )
+
+const encryptedFile = "temp_encypt_tbd"
 
 func runServer() {
 	logger := log.WithFields(log.Fields{
@@ -74,13 +79,53 @@ func fillString(retunString string, toLength int) string {
 	return retunString
 }
 
+func createCipher() cipher.Block {
+	c, err := aes.NewCipher([]byte(aesKey))
+	if err != nil {
+		log.Fatalf("Failed to create the AES cipher: %s", err)
+	}
+	return c
+}
+
+func encryption(plainText string) {
+	bytes := []byte(plainText)
+	blockCipher := createCipher()
+	stream := cipher.NewCTR(blockCipher, IV)
+	stream.XORKeyStream(bytes, bytes)
+	err := ioutil.WriteFile(fmt.Sprintf(encryptedFile), bytes, 0644)
+	if err != nil {
+		log.Fatalf("Writing encryption file: %s", err)
+	} else {
+		fmt.Printf("Message encrypted in file: %s\n\n", encryptedFile)
+	}
+}
+
 func sendFileToClient(id int, connection net.Conn) {
 	logger := log.WithFields(log.Fields{
 		"function": "sendFileToClient #" + strconv.Itoa(id),
 	})
 	defer connection.Close()
+
+	// Open File
+	var plainText string
+	var plainChunk = make([]byte, 16)
+	fileTemp, err := os.Open(fileName)
+	for {
+		_, err = fileTemp.Read(plainChunk)
+		if err == io.EOF {
+			//End of file reached, break out of for loop
+			logger.Info("EOF")
+			break
+		}
+		plainText += string(plainChunk)
+		logger.Info("1st Step done\n")
+	}
+
+	// AES Encrptptppt
+	encryption(plainText)
+
 	//Open the file that needs to be send to the client
-	file, err := os.Open(fileName)
+	file, err := os.Open(encryptedFile)
 	if err != nil {
 		fmt.Println(err)
 		return

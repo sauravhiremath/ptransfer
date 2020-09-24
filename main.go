@@ -10,13 +10,17 @@ import (
 const BUFFERSIZE = 1024
 const numberConnections = 8
 
+// IV is the key for AES pls
+var IV = []byte("1234567812345678")
+
 // Build flags
 var server, file string
 
 // Global varaibles
-var serverAddress, fileName string
+var serverAddress, aesKey, fileName string
 
 func main() {
+	flag.StringVar(&aesKey, "aesKey", "", "(required) Key or Password to encrypt using AES")
 	flag.StringVar(&serverAddress, "server", "", "(run as client) server address to connect to")
 	flag.StringVar(&fileName, "file", "", "(run as server) file to serve")
 	flag.Parse()
@@ -48,8 +52,8 @@ func main() {
   |  |  |  | ) ) |  |  |  |  |  |  |  |  |  |
   |  |  |  |(_(  |  |  |  |  |  |  |  |  |  |
   |  |  |  |  |  |  |  |  |  |  |  |  |  |  |
-  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  
-`)
+  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  `)
+
 	if len(fileName) != 0 {
 		runServer()
 	} else if len(serverAddress) != 0 {

@@ -1,0 +1,23 @@
+# github.com/gosuri/uilive v0.0.1
+## explicit
+github.com/gosuri/uilive
+# github.com/gosuri/uiprogress v0.0.1
+## explicit
+github.com/gosuri/uiprogress
+github.com/gosuri/uiprogress/util/strutil
+# github.com/mattn/go-isatty v0.0.3
+## explicit
+github.com/mattn/go-isatty
+# github.com/pkg/errors v0.8.0
+## explicit
+github.com/pkg/errors
+# github.com/sirupsen/logrus v1.0.3
+## explicit
+github.com/sirupsen/logrus
+# golang.org/x/crypto v0.0.0-20170930174604-9419663f5a44
+## explicit
+golang.org/x/crypto/ssh/terminal
+# golang.org/x/sys v0.0.0-20171013135506-686000749eae
+## explicit
+golang.org/x/sys/unix
+golang.org/x/sys/windows

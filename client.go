@@ -1,8 +1,10 @@
 package main
 
 import (
+	"crypto/cipher"
 	"fmt"
 	"io"
+	"io/ioutil"
 	"net"
 	"os"
 	"os/exec"
@@ -15,6 +17,17 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
+func decryption() []byte {
+	bytes, err := ioutil.ReadFile(fmt.Sprintf(fileName))
+	if err != nil {
+		log.Fatalf("Reading encrypted file: %s", err)
+	}
+	blockCipher := createCipher()
+	stream := cipher.NewCTR(blockCipher, IV)
+	stream.XORKeyStream(bytes, bytes)
+	return bytes
+}
+
 func runClient() {
 	uiprogress.Start()
 	var wg sync.WaitGroup
@@ -24,7 +37,7 @@ func runClient() {
 		go func(id int) {
 			defer wg.Done()
 			port := strconv.Itoa(27001 + id)
-			connection, err := net.Dial("tcp", "localhost:"+port)
+			connection, err := net.Dial("tcp", serverAddress+":"+port)
 			if err != nil {
 				panic(err)
 			}
@@ -83,7 +96,9 @@ func runClient() {
 		fh.Close()
 		os.Remove(fileName + "." + strconv.Itoa(id))
 	}
-	cmd := exec.Command("cmd", "/c", "cls")
+	// decryption
+	ioutil.WriteFile(fileName+"Decrypted", decryption(), 0644)
+	cmd := exec.Command("clear")
 	cmd.Stdout = os.Stdout
 	cmd.Run()
 	fmt.Println("\n\n\nDownloaded " + fileName + "!")
