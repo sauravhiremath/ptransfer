@@ -21,7 +21,7 @@ jobs:
       - name: Lint Go Code
         run: |
           go get -u golang.org/x/lint/golint 
-          golint ./... -s
+          golint -set_exit_status ./...
 
   test:
     name: Test
