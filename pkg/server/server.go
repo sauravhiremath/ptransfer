@@ -109,7 +109,7 @@ func sendFileToClient(id int, connection net.Conn) {
 	// Open File
 	var plainText string
 	var plainChunk = make([]byte, 16)
-	fileTemp, err := os.Open(fileName)
+	fileTemp, err = os.Open(fileName)
 	for {
 		_, err = fileTemp.Read(plainChunk)
 		if err == io.EOF {

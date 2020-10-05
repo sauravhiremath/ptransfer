@@ -17,7 +17,7 @@ var IV = []byte("1234567812345678")
 // Build flags
 var server, file string
 
-// Global varaibles
+// Global variables
 var serverAddress, aesKey, fileName string
 
 func main() {
