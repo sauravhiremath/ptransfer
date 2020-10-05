@@ -4,33 +4,25 @@ import (
 	"flag"
 	"fmt"
 
+	ptf "ptransfer/pkg/ptransfer"
+
 	log "github.com/sirupsen/logrus"
 )
-
-// BUFFERSIZE is the minimum packet size for file transfers
-const BUFFERSIZE = 1024
-const numberConnections = 8
-
-// IV is the key for AES pls
-var IV = []byte("1234567812345678")
 
 // Build flags
 var server, file string
 
-// Global variables
-var serverAddress, aesKey, fileName string
-
 func main() {
-	flag.StringVar(&aesKey, "aesKey", "", "(required) Key or Password to encrypt using AES")
-	flag.StringVar(&serverAddress, "server", "", "(run as client) server address to connect to")
-	flag.StringVar(&fileName, "file", "", "(run as server) file to serve")
+	flag.StringVar(&ptf.AESKey, "aesKey", "", "(required) Key or Password to encrypt using AES")
+	flag.StringVar(&ptf.ServerAddress, "server", "", "(run as client) server address to connect to")
+	flag.StringVar(&ptf.FileName, "file", "", "(run as server) file to serve")
 	flag.Parse()
 	// Check build flags too, which take precedent
 	if server != "" {
-		serverAddress = server
+		ptf.ServerAddress = server
 	}
 	if file != "" {
-		fileName = file
+		ptf.FileName = file
 	}
 	fmt.Println(`
 ───────────▄███████████████▄───────────────────────────────────────────────────────
@@ -59,10 +51,10 @@ func main() {
 ────────────▀████████████▀─────────────────────────────────────────────────────────
 	`)
 
-	if len(fileName) != 0 {
-		runServer()
-	} else if len(serverAddress) != 0 {
-		runClient()
+	if len(ptf.FileName) != 0 {
+		ptf.RunServer()
+	} else if len(ptf.ServerAddress) != 0 {
+		ptf.RunClient()
 	} else {
 		fmt.Println("You must specify either -file (for running as a server) or -server (for running as a client)")
 	}

@@ -1,4 +1,4 @@
-package main
+package ptransfer
 
 import (
 	"crypto/cipher"
@@ -18,7 +18,7 @@ import (
 )
 
 func decryption() []byte {
-	bytes, err := ioutil.ReadFile(fmt.Sprintf(fileName))
+	bytes, err := ioutil.ReadFile(fmt.Sprintf(FileName))
 	if err != nil {
 		log.Fatalf("Reading encrypted file: %s", err)
 	}
@@ -28,16 +28,17 @@ func decryption() []byte {
 	return bytes
 }
 
-func runClient() {
+//RunClient does
+func RunClient() {
 	uiprogress.Start()
 	var wg sync.WaitGroup
-	wg.Add(numberConnections)
-	bars := make([]*uiprogress.Bar, numberConnections)
-	for id := 0; id < numberConnections; id++ {
+	wg.Add(NumberConnections)
+	bars := make([]*uiprogress.Bar, NumberConnections)
+	for id := 0; id < NumberConnections; id++ {
 		go func(id int) {
 			defer wg.Done()
 			port := strconv.Itoa(27001 + id)
-			connection, err := net.Dial("tcp", serverAddress+":"+port)
+			connection, err := net.Dial("tcp", ServerAddress+":"+port)
 			if err != nil {
 				panic(err)
 			}
@@ -51,9 +52,9 @@ func runClient() {
 			bars[id] = uiprogress.AddBar(int(fileSize+1028) / 1024).AppendCompleted().PrependElapsed()
 
 			connection.Read(bufferFileName)
-			fileName = strings.Trim(string(bufferFileName), ":")
-			os.Remove(fileName + "." + strconv.Itoa(id))
-			newFile, err := os.Create(fileName + "." + strconv.Itoa(id))
+			FileName = strings.Trim(string(bufferFileName), ":")
+			os.Remove(FileName + "." + strconv.Itoa(id))
+			newFile, err := os.Create(FileName + "." + strconv.Itoa(id))
 			if err != nil {
 				panic(err)
 			}
@@ -63,7 +64,7 @@ func runClient() {
 			for {
 				if (fileSize - receivedBytes) < BUFFERSIZE {
 					io.CopyN(newFile, connection, (fileSize - receivedBytes))
-					// Empty the remaining bytes that we don't need from the network buffer
+					// Empty the reng bytes that we don't need from the network buffer
 					connection.Read(make([]byte, (receivedBytes+BUFFERSIZE)-fileSize))
 					break
 				}
@@ -77,14 +78,14 @@ func runClient() {
 	wg.Wait()
 
 	// cat the file
-	os.Remove(fileName)
-	finished, err := os.Create(fileName)
+	os.Remove(FileName)
+	finished, err := os.Create(FileName)
 	defer finished.Close()
 	if err != nil {
 		log.Fatal(err)
 	}
-	for id := 0; id < numberConnections; id++ {
-		fh, err := os.Open(fileName + "." + strconv.Itoa(id))
+	for id := 0; id < NumberConnections; id++ {
+		fh, err := os.Open(FileName + "." + strconv.Itoa(id))
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -94,15 +95,15 @@ func runClient() {
 			log.Fatal(err)
 		}
 		fh.Close()
-		os.Remove(fileName + "." + strconv.Itoa(id))
+		os.Remove(FileName + "." + strconv.Itoa(id))
 	}
 
 	// decryption
-	ioutil.WriteFile(fileName+"Decrypted", decryption(), 0644)
+	ioutil.WriteFile(FileName+"Decrypted", decryption(), 0644)
 
 	cmd := exec.Command("clear")
 	cmd.Stdout = os.Stdout
 	cmd.Run()
-	fmt.Println("\n\n\nDownloaded " + fileName + "!")
+	fmt.Println("\n\n\nDownloaded " + FileName + "!")
 	time.Sleep(1 * time.Second)
 }

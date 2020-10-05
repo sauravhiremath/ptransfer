@@ -1,4 +1,4 @@
-module github.com/sauravhiremath/ptransfer
+module ptransfer
 
 go 1.15
 

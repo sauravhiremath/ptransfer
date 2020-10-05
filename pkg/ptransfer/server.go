@@ -1,4 +1,4 @@
-package main
+package ptransfer
 
 import (
 	"crypto/aes"
@@ -18,14 +18,15 @@ import (
 
 const encryptedFile = "temp_encypt_tbd"
 
-func runServer() {
+// RunServer does
+func RunServer() {
 	logger := log.WithFields(log.Fields{
 		"function": "main",
 	})
 	logger.Info("Initializing")
 	var wg sync.WaitGroup
-	wg.Add(numberConnections)
-	for id := 0; id < numberConnections; id++ {
+	wg.Add(NumberConnections)
+	for id := 0; id < NumberConnections; id++ {
 		go listenerThread(id, &wg)
 	}
 	wg.Wait()
@@ -33,7 +34,7 @@ func runServer() {
 
 func listenerThread(id int, wg *sync.WaitGroup) {
 	logger := log.WithFields(log.Fields{
-		"function": "listenerThread@" + serverAddress + ":" + strconv.Itoa(27000+id),
+		"function": "listenerThread@" + ServerAddress + ":" + strconv.Itoa(27000+id),
 	})
 
 	defer wg.Done()
@@ -47,11 +48,11 @@ func listenerThread(id int, wg *sync.WaitGroup) {
 func listener(id int) (err error) {
 	port := strconv.Itoa(27001 + id)
 	logger := log.WithFields(log.Fields{
-		"function": "listener@" + serverAddress + ":" + port,
+		"function": "listener@" + ServerAddress + ":" + port,
 	})
-	server, err := net.Listen("tcp", serverAddress+":"+port)
+	server, err := net.Listen("tcp", ServerAddress+":"+port)
 	if err != nil {
-		return errors.Wrap(err, "Error listening on "+serverAddress+":"+port)
+		return errors.Wrap(err, "Error listening on "+ServerAddress+":"+port)
 	}
 	defer server.Close()
 	logger.Info("waiting for connections")
@@ -80,7 +81,7 @@ func fillString(retunString string, toLength int) string {
 }
 
 func createCipher() cipher.Block {
-	c, err := aes.NewCipher([]byte(aesKey))
+	c, err := aes.NewCipher([]byte(AESKey))
 	if err != nil {
 		log.Fatalf("Failed to create the AES cipher: %s", err)
 	}
@@ -109,7 +110,7 @@ func sendFileToClient(id int, connection net.Conn) {
 	// Open File
 	var plainText string
 	var plainChunk = make([]byte, 16)
-	fileTemp, err = os.Open(fileName)
+	fileTemp, err := os.Open(FileName)
 	for {
 		_, err = fileTemp.Read(plainChunk)
 		if err == io.EOF {
@@ -131,7 +132,7 @@ func sendFileToClient(id int, connection net.Conn) {
 		return
 	}
 	defer file.Close()
-	//Get the filename and filesize
+	//Get the Filename and filesize
 	fileInfo, err := file.Stat()
 	if err != nil {
 		fmt.Println(err)
@@ -139,26 +140,26 @@ func sendFileToClient(id int, connection net.Conn) {
 	}
 
 	numChunks := math.Ceil(float64(fileInfo.Size()) / float64(BUFFERSIZE))
-	chunksPerWorker := int(math.Ceil(numChunks / float64(numberConnections)))
+	chunksPerWorker := int(math.Ceil(numChunks / float64(NumberConnections)))
 
 	bytesPerConnection := int64(chunksPerWorker * BUFFERSIZE)
-	if id+1 == numberConnections {
-		bytesPerConnection = fileInfo.Size() - (numberConnections-1)*bytesPerConnection
+	if id+1 == NumberConnections {
+		bytesPerConnection = fileInfo.Size() - (NumberConnections-1)*bytesPerConnection
 	}
 	fileSize := fillString(strconv.FormatInt(int64(bytesPerConnection), 10), 10)
 
-	fileName := fillString(fileInfo.Name(), 64)
+	FileName := fillString(fileInfo.Name(), 64)
 
-	if id == 0 || id == numberConnections-1 {
+	if id == 0 || id == NumberConnections-1 {
 		logger.Infof("numChunks: %v", numChunks)
 		logger.Infof("chunksPerWorker: %v", chunksPerWorker)
 		logger.Infof("bytesPerConnection: %v", bytesPerConnection)
-		logger.Infof("fileName: %v", fileInfo.Name())
+		logger.Infof("FileName: %v", fileInfo.Name())
 	}
 
 	logger.Info("sending")
 	connection.Write([]byte(fileSize))
-	connection.Write([]byte(fileName))
+	connection.Write([]byte(FileName))
 	sendBuffer := make([]byte, BUFFERSIZE)
 
 	chunkI := 0
@@ -169,7 +170,7 @@ func sendFileToClient(id int, connection net.Conn) {
 			logger.Info("EOF")
 			break
 		}
-		if (chunkI >= chunksPerWorker*id && chunkI < chunksPerWorker*id+chunksPerWorker) || (id == numberConnections-1 && chunkI >= chunksPerWorker*id) {
+		if (chunkI >= chunksPerWorker*id && chunkI < chunksPerWorker*id+chunksPerWorker) || (id == NumberConnections-1 && chunkI >= chunksPerWorker*id) {
 			connection.Write(sendBuffer)
 		}
 		chunkI++
