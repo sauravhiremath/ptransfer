@@ -2,6 +2,9 @@
 [![Lines of code](https://img.shields.io/tokei/lines/github/sauravhiremath/ptransfer?style=for-the-badge)](https://github.com/sauravhiremath/ptransfer)
 [![GitHub go.mod Go version](https://img.shields.io/github/go-mod/go-version/sauravhiremath/ptransfer?style=for-the-badge)](https://github.com/golang/go)
 [![GitHub contributors](https://img.shields.io/github/contributors-anon/sauravhiremath/ptransfer?style=for-the-badge)](https://github.com/sauravhiremath/ptransfer)
+
+![image](https://user-images.githubusercontent.com/28642011/95137895-a9c1e200-0786-11eb-84de-281ef9c05874.png)
+
 # ptransfer
 
 *File transfer over parallel TCP, requires port-forwarding your TCP ports.*
@@ -58,12 +61,6 @@ TODO
 
 # Development Setup
 
-Initialise the project as a go-module
-
-```
-go mod init github.com/sauravhiremath/ptransfer
-```
-
 Installing the dependencies
 
 ```
@@ -73,7 +70,20 @@ go install
 Build the project to get the executable
 
 ```
-go build -o ptransfer/ptransfer
+go build cmd/ptransfer -o build/ptransfer
+```
+
+Run the project directly without `build`
+
+```
+go run cmd/ptransfer/main.go
+```
+
+Creating Releases (adding new tags, following semVer)
+
+```
+git tag v0.1.0
+git push --tags
 ```
 
 # License
