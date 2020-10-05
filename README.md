@@ -2,7 +2,7 @@
 
 *File transfer over parallel TCP, requires port-forwarding your TCP ports.*
 
-This program pays homage to [magic-ptransfer](https://github.com/warner/magic-ptransfer) except it doesn't have the rendevous server, or the transit relay. It's not really anything like it, except that its file transfer over TCP with AES-128 encryption built over it. Here you can transfer a file using multiple TCP ports simultaneously. 
+Heavily inspired from [magic-wormhole](https://github.com/warner/magic-wormhole) and [wormhole](https://github.com/schollz/wormhole) except it doesn't have the rendevous server, or the transit relay. It's not really anything like it, except that its file transfer over TCP with AES-128 encryption built over it. Here you can transfer a file using multiple TCP ports simultaneously. 
 
 ## Normal use
 
