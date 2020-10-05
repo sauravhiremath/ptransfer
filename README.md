@@ -1,3 +1,7 @@
+[![Go Report Card](https://goreportcard.com/badge/github.com/sauravhiremath/ptransfer?style=for-the-badge)](https://goreportcard.com/report/github.com/sauravhiremath/ptransfer)
+[![Lines of code](https://img.shields.io/tokei/lines/github/sauravhiremath/ptransfer?style=for-the-badge)](https://github.com/sauravhiremath/ptransfer)
+[![GitHub go.mod Go version](https://img.shields.io/github/go-mod/go-version/sauravhiremath/ptransfer?style=for-the-badge)](https://github.com/golang/go)
+[![GitHub contributors](https://img.shields.io/github/contributors-anon/sauravhiremath/ptransfer?style=for-the-badge)](https://github.com/sauravhiremath/ptransfer)
 # ptransfer
 
 *File transfer over parallel TCP, requires port-forwarding your TCP ports.*
