@@ -16,4 +16,4 @@ vendor/
 
 # Project specific
 test/
-ptransfer/
+build/
