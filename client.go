@@ -96,8 +96,10 @@ func runClient() {
 		fh.Close()
 		os.Remove(fileName + "." + strconv.Itoa(id))
 	}
+
 	// decryption
 	ioutil.WriteFile(fileName+"Decrypted", decryption(), 0644)
+
 	cmd := exec.Command("clear")
 	cmd.Stdout = os.Stdout
 	cmd.Run()
