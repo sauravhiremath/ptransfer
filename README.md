@@ -61,16 +61,18 @@ TODO
 
 # Development Setup
 
-Installing the dependencies
+> Note: This setup uses go1.15.2
+
+Installing the dependencies in vendor
 
 ```
-go install
+go mod vendor
 ```
 
 Build the project to get the executable
 
 ```
-go build cmd/ptransfer -o build/ptransfer
+go build -o build/ptransfer ./cmd/ptransfer
 ```
 
 Run the project directly without `build`
