@@ -81,6 +81,17 @@ Run the project directly without `build`
 go run cmd/ptransfer/main.go
 ```
 
+<s>Whitelisting</s> Allowlist ports 27001 - 27008 in your firewall.
+This is required only on sender side (it has to open connection channels to allow the client to connect)
+
+Example usage with [ufw](https://help.ubuntu.com/community/UFW) (the default firewall tool used in ubuntu, I personally use it with arch too)
+
+```
+sudo ufw allow 27001:27008/tcp
+```
+
+Extra:
+
 Creating Releases (adding new tags, following semVer)
 
 ```
