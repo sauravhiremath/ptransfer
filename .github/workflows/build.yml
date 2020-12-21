@@ -39,7 +39,7 @@ jobs:
         run: go test ./... 
 
       - name: Upload Coverage report to CodeCov
-        uses: codecov/codecov-action@v1.0.15
+        uses: codecov/codecov-action@v1.1.1
         with:
           token: ${{secrets.CODECOV_TOKEN}}
           file: ./coverage.txt
