@@ -1,6 +1,6 @@
 module ptransfer
 
-go 1.15
+go 1.19
 
 require (
 	github.com/gosuri/uilive v0.0.4 // indirect
